@@ -1,6 +1,42 @@
-# Clipped It — Codex Build Kit
+# Clipped It — Livestream Intelligence
 
-A Codex-ready product and engineering package for a real-time livestream intelligence, trend detection, creator-authorized clipping, and media distribution platform.
+A real-time livestream intelligence, trend detection, and rights-aware media platform. The MVP web app (Next.js 15 + Supabase) is wired and runs today; the docs below capture the full product vision.
+
+## Quickstart
+
+```bash
+npm install
+cp .env.example .env.local   # fill in what you have (see below)
+npm run dev                  # http://localhost:3000
+npm test                     # scoring unit tests
+npm run build                # production build
+```
+
+The app runs in three modes and degrades gracefully — it never crashes on missing keys:
+
+| Mode | When | What you get |
+| --- | --- | --- |
+| **unconfigured** | no keys | Live UI with clear "add credentials" prompts |
+| **preview** | `TWITCH_CLIENT_ID` + `TWITCH_CLIENT_SECRET` set | Real top Twitch streams, ranked by reach-based momentum (no history yet) |
+| **database** | Supabase also configured + ingest run | Full momentum history, emerging detection, offline reconciliation |
+
+### Going live (checklist)
+
+1. **Twitch** — register an app at <https://dev.twitch.tv/console>, set `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET`. Public reads use the app (client-credentials) token; no user login required.
+2. **Supabase** — create a project, apply `supabase/schema.sql`, set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
+3. **Ingest** — set `CRON_SECRET`. The scheduled worker lives at `GET /api/cron/ingest` (auth: `Authorization: Bearer $CRON_SECRET`). `vercel.json` schedules it hourly; the Hobby plan runs crons ~once/day, Pro honors the full schedule. Live viewing does not depend on the cron — the dashboards read Twitch in real time on each request; the cron only accumulates momentum **history**. Trigger a snapshot manually anytime with `curl "$URL/api/cron/ingest?secret=$CRON_SECRET"`.
+4. **Kick** (optional) — set `KICK_CLIENT_ID` / `KICK_CLIENT_SECRET`; the adapter is isolated and failures are contained per-platform.
+5. **Deploy** — push to Vercel (or any Node host). Add the same env vars in the host dashboard.
+
+### Routes
+
+- `/` landing · `/live` Live Radar · `/trending` Trending · `/emerging` Emerging
+- `GET /api/live` · `GET /api/trending` · `GET /api/emerging` — dashboard JSON
+- `GET|POST /api/cron/ingest` — scheduled ingest (secret-protected)
+
+---
+
+*Original build-kit overview follows.*
 
 ## Core idea
 

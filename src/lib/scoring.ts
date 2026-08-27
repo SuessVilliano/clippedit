@@ -47,17 +47,19 @@ export function calculateMomentum(input: MomentumInput): MomentumResult {
   const parts: Array<[number, number]> = [];
 
   if (growth5 != null) {
-    parts.push([0.30, normalize(clamp(growth5, -100, 500), -100, 500)]);
+    parts.push([0.25, normalize(clamp(growth5, -100, 500), -100, 500)]);
   }
   if (growth15 != null) {
-    parts.push([0.25, normalize(clamp(growth15, -100, 500), -100, 500)]);
+    parts.push([0.20, normalize(clamp(growth15, -100, 500), -100, 500)]);
   }
   if (ratio != null) {
-    parts.push([0.25, normalize(clamp(ratio, 0, 10), 0, 10)]);
+    parts.push([0.20, normalize(clamp(ratio, 0, 10), 0, 10)]);
   }
 
+  // Absolute reach carries the largest single weight so that meaningful
+  // audience wins over a large percentage spike on a tiny stream.
   const absoluteReach = Math.log10(input.viewersNow + 10);
-  parts.push([0.20, normalize(absoluteReach, 1, 5)]);
+  parts.push([0.35, normalize(absoluteReach, 1, 5)]);
 
   const totalWeight = parts.reduce((sum, [w]) => sum + w, 0);
   const weighted = parts.reduce((sum, [w, v]) => sum + w * v, 0);
