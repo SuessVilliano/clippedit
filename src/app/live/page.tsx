@@ -1,16 +1,17 @@
-import { Dashboard } from "@/components/Dashboard";
+import { Feed } from "@/components/Feed";
 import { getLiveData } from "@/lib/api-data";
 
 export const dynamic = "force-dynamic";
 
 export default async function LivePage() {
-  const payload = await getLiveData();
+  const initial = await getLiveData();
   return (
-    <Dashboard
-      payload={payload}
+    <Feed
+      initial={initial}
+      endpoint="/api/live"
+      variant="stream"
       title="Live Radar"
-      subtitle="Who in the monitored universe is live right now, ranked by current audience."
-      metric="viewers"
+      subtitle="Who's live right now across Twitch and Kick, ranked by current audience."
     />
   );
 }

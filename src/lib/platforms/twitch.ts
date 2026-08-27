@@ -4,8 +4,14 @@ import type {
   LiveQuery,
   NormalizedClip,
   NormalizedStream,
-  PlatformAdapter
+  PlatformAdapter,
+  TrendingCategory
 } from "@/lib/types";
+
+const sized = (template?: string, w = 640, h = 360) =>
+  template
+    ? template.replace("{width}", String(w)).replace("{height}", String(h))
+    : undefined;
 
 const StreamSchema = z.object({
   id: z.string(),
@@ -85,9 +91,61 @@ export class TwitchAdapter implements PlatformAdapter {
       viewerCount: s.viewer_count,
       startedAt: s.started_at,
       language: s.language,
+      thumbnailUrl: sized(s.thumbnail_url),
       observedAt,
       raw: s
     }));
+  }
+
+  async getTrendingCategories(limit = 10): Promise<TrendingCategory[]> {
+    const json = await this.helix(`games/top?first=${Math.min(limit, 100)}`);
+    const schema = z.array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        box_art_url: z.string().optional()
+      })
+    );
+    const data = schema.parse(json.data ?? []);
+    return data.map((g) => ({
+      platform: "twitch" as const,
+      id: g.id,
+      name: g.name,
+      boxArtUrl: sized(g.box_art_url, 285, 380)
+    }));
+  }
+
+  /**
+   * "Most clipped right now" derived from current data: take the hottest live
+   * categories and pull their top clips from the last 24h, then let the caller
+   * rank by velocity. This ties clip discovery to what is actually trending.
+   */
+  async getTrendingClips(limit = 40): Promise<NormalizedClip[]> {
+    const categories = await this.getTrendingCategories(6);
+    const now = new Date();
+    const since = new Date(now.getTime() - 24 * 3_600_000).toISOString();
+
+    const batches = await Promise.all(
+      categories.map((c) =>
+        this.getPublicClips({
+          categoryId: c.id,
+          startedAt: since,
+          endedAt: now.toISOString(),
+          limit: 20
+        }).catch(() => [] as NormalizedClip[])
+      )
+    );
+
+    const merged = batches.flat();
+    const seen = new Set<string>();
+    const unique = merged.filter((c) => {
+      if (seen.has(c.platformClipId)) return false;
+      seen.add(c.platformClipId);
+      return true;
+    });
+    return unique
+      .sort((a, b) => (b.viewCount ?? 0) - (a.viewCount ?? 0))
+      .slice(0, limit);
   }
 
   async getPublicClips(input: ClipQuery): Promise<NormalizedClip[]> {

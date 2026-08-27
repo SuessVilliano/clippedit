@@ -1,16 +1,17 @@
-import { Dashboard } from "@/components/Dashboard";
+import { Feed } from "@/components/Feed";
 import { getEmergingData } from "@/lib/api-data";
 
 export const dynamic = "force-dynamic";
 
 export default async function EmergingPage() {
-  const payload = await getEmergingData();
+  const initial = await getEmergingData();
   return (
-    <Dashboard
-      payload={payload}
+    <Feed
+      initial={initial}
+      endpoint="/api/emerging"
+      variant="stream"
       title="Emerging"
       subtitle="Smaller streams punching above their usual audience — signal before the leaderboard catches up."
-      metric="momentum"
     />
   );
 }

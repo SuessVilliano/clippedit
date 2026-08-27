@@ -19,8 +19,17 @@ export interface NormalizedStream {
   viewerCount: number;
   startedAt?: string;
   language?: string;
+  thumbnailUrl?: string;
   observedAt: string;
   raw: unknown;
+}
+
+export interface TrendingCategory {
+  platform: Platform;
+  id: string;
+  name: string;
+  viewers?: number;
+  boxArtUrl?: string;
 }
 
 export interface NormalizedClip {
@@ -57,4 +66,6 @@ export interface PlatformAdapter {
   platform: Platform;
   getLiveStreams(input: LiveQuery): Promise<NormalizedStream[]>;
   getPublicClips?(input: ClipQuery): Promise<NormalizedClip[]>;
+  getTrendingCategories?(limit?: number): Promise<TrendingCategory[]>;
+  getTrendingClips?(limit?: number): Promise<NormalizedClip[]>;
 }
