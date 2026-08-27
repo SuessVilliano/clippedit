@@ -37,6 +37,11 @@ create table if not exists streams (
   is_live boolean not null default true,
   last_viewer_count integer,
   last_observed_at timestamptz,
+  -- Denormalized latest scoring metrics (history lives in stream_snapshots).
+  last_momentum_score numeric,
+  last_growth_5m_pct numeric,
+  last_growth_15m_pct numeric,
+  last_audience_ratio numeric,
   raw jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -73,6 +78,9 @@ create table if not exists clips (
   duration_seconds numeric,
   last_view_count bigint,
   last_observed_at timestamptz,
+  -- Denormalized latest velocity metrics (history lives in clip_snapshots).
+  last_views_per_hour numeric,
+  last_velocity_score numeric,
   rights_mode rights_mode_type not null default 'metadata_only',
   processing_allowed boolean not null default false,
   commercial_use_allowed boolean not null default false,
@@ -83,6 +91,12 @@ create table if not exists clips (
   unique(platform, platform_clip_id)
 );
 
+create index if not exists streams_live_momentum_idx
+on streams(is_live, last_momentum_score desc);
+
+create index if not exists streams_live_viewers_idx
+on streams(is_live, last_viewer_count desc);
+
 create table if not exists clip_snapshots (
   id bigserial primary key,
   clip_id uuid not null references clips(id) on delete cascade,
@@ -92,6 +106,9 @@ create table if not exists clip_snapshots (
   velocity_score numeric,
   unique(clip_id, observed_at)
 );
+
+create index if not exists clips_velocity_idx
+on clips(last_velocity_score desc);
 
 create table if not exists topics (
   id uuid primary key default gen_random_uuid(),
