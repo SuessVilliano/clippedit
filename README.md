@@ -24,7 +24,7 @@ The app runs in three modes and degrades gracefully — it never crashes on miss
 
 1. **Twitch** — register an app at <https://dev.twitch.tv/console>, set `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET`. Public reads use the app (client-credentials) token; no user login required.
 2. **Supabase** — create a project, apply `supabase/schema.sql`, set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`.
-3. **Ingest** — set `CRON_SECRET`. The scheduled worker lives at `GET /api/cron/ingest` (auth: `Authorization: Bearer $CRON_SECRET`). `vercel.json` schedules it hourly; the Hobby plan runs crons ~once/day, Pro honors the full schedule. Live viewing does not depend on the cron — the dashboards read Twitch in real time on each request; the cron only accumulates momentum **history**. Trigger a snapshot manually anytime with `curl "$URL/api/cron/ingest?secret=$CRON_SECRET"`.
+3. **Ingest** — set `CRON_SECRET`. The scheduled worker lives at `GET /api/cron/ingest` (auth: `Authorization: Bearer $CRON_SECRET`). `vercel.json` schedules it daily (Hobby-plan limit); upgrade to Pro and raise the frequency for fresher history. Live viewing does not depend on the cron — the dashboards read Twitch in real time on each request; the cron only accumulates momentum **history**. Trigger a snapshot manually anytime with `curl "$URL/api/cron/ingest?secret=$CRON_SECRET"`.
 4. **Kick** (optional) — set `KICK_CLIENT_ID` / `KICK_CLIENT_SECRET`; the adapter is isolated and failures are contained per-platform.
 5. **Deploy** — push to Vercel (or any Node host). Add the same env vars in the host dashboard.
 
