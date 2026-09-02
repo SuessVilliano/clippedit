@@ -8,10 +8,10 @@ export default async function TrendingPage() {
   return (
     <Feed
       initial={initial}
-      endpoint="/api/trending"
+      endpoint="/api/trending/runtime"
       variant="stream"
       title="Trending"
-      subtitle="Streams accelerating fastest right now — ranked by momentum, not raw totals."
+      subtitle="Fetch Twitch and Kick on demand — no background polling."
     />
   );
 }
