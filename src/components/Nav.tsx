@@ -9,6 +9,7 @@ const links: Array<[string, string]> = [
   ["/trending", "Trending"],
   ["/clips", "Clips"],
   ["/radar", "Clip Radar"],
+  ["/spy", "Clip Spy"],
   ["/library", "Library"],
   ["/settings", "Settings"]
 ];
@@ -36,10 +37,11 @@ const icons: Record<string, ReactNode> = {
   "/trending": <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 17l6-6 4 4 8-8" strokeLinecap="round" strokeLinejoin="round" /><path d="M21 7v5h-5" strokeLinecap="round" strokeLinejoin="round" /></svg>,
   "/clips": <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M20 4L8.5 15.5M14.5 14.5L20 20M8.5 8.5L11 11" strokeLinecap="round" strokeLinejoin="round" /></svg>,
   "/radar": <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4.5" /><circle cx="12" cy="12" r="1" fill="currentColor" /></svg>,
+  "/spy": <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.5"/></svg>,
   "/library": <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 5a2 2 0 012-2h12a2 2 0 012 2v16l-8-4-8 4V5z" strokeLinecap="round" strokeLinejoin="round" /></svg>
 };
 
-const tabs: Array<[string, string]> = [["/live", "Live"], ["/trending", "Trending"], ["/clips", "Clips"], ["/radar", "Radar"], ["/library", "Library"]];
+const tabs: Array<[string, string]> = [["/live", "Live"], ["/trending", "Trending"], ["/clips", "Clips"], ["/spy", "Spy"], ["/library", "Library"]];
 
 export function BottomNav() {
   const pathname = usePathname();
