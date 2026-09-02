@@ -8,7 +8,8 @@ const links: Array<[string, string]> = [
   ["/live", "Live"],
   ["/trending", "Trending"],
   ["/clips", "Clips"],
-  ["/radar", "Clip Radar"]
+  ["/radar", "Clip Radar"],
+  ["/settings", "Settings"]
 ];
 
 function isActive(pathname: string, href: string) {
@@ -65,6 +66,12 @@ const icons: Record<string, ReactNode> = {
       <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4.5" />
       <circle cx="12" cy="12" r="1" fill="currentColor" />
     </svg>
+  ),
+  "/settings": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.6V21h-4v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 00.3-1.9A1.7 1.7 0 003 14H3v-4h.1a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 001.9.3 1.7 1.7 0 001-1.6V3h4v.1a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 00-.3 1.9 1.7 1.7 0 001.6 1H21v4h-.1a1.7 1.7 0 00-1.5 1z" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 };
 
@@ -73,7 +80,8 @@ const tabs: Array<[string, string]> = [
   ["/live", "Live"],
   ["/trending", "Trending"],
   ["/clips", "Clips"],
-  ["/radar", "Radar"]
+  ["/radar", "Radar"],
+  ["/settings", "Settings"]
 ];
 
 export function BottomNav() {
