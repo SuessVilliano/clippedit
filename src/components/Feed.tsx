@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type {
   ClipsPayload,
   DashboardPayload,
@@ -12,8 +12,6 @@ import { GridSkeleton } from "@/components/Skeletons";
 
 type AnyPayload = DashboardPayload | ClipsPayload | MomentsPayload;
 type Variant = "stream" | "clip" | "moment";
-
-const REFRESH_MS = 45_000;
 
 function items(payload: AnyPayload, variant: Variant): unknown[] {
   if (variant === "stream") return (payload as DashboardPayload).streams ?? [];
@@ -45,7 +43,6 @@ export function Feed({
   const [payload, setPayload] = useState<AnyPayload>(initial);
   const [refreshing, setRefreshing] = useState(false);
   const [, forceTick] = useState(0);
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
@@ -60,13 +57,9 @@ export function Feed({
   }, [endpoint]);
 
   useEffect(() => {
-    timer.current = setInterval(refresh, REFRESH_MS);
     const tick = setInterval(() => forceTick((n) => n + 1), 1000);
-    return () => {
-      if (timer.current) clearInterval(timer.current);
-      clearInterval(tick);
-    };
-  }, [refresh]);
+    return () => clearInterval(tick);
+  }, []);
 
   const list = items(payload, variant);
   const live = payload.mode !== "unconfigured";
@@ -110,7 +103,7 @@ export function Feed({
           onClick={refresh}
           aria-label="Refresh"
         >
-          <RefreshIcon /> Refresh
+          <RefreshIcon /> Fetch now
         </button>
       </div>
 
@@ -122,8 +115,8 @@ export function Feed({
             <h3>Nothing here yet</h3>
             <p>
               {payload.mode === "unconfigured"
-                ? "Add credentials to start streaming live data."
-                : "No results in the current window — try refreshing in a moment."}
+                ? "Connect Twitch or Kick in Settings, then press Fetch now."
+                : "No results in the current fetch — try again when you want a new snapshot."}
             </p>
           </div>
         )
