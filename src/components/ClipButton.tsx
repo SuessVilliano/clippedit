@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { upsertLibraryItem } from "@/lib/library";
 
 interface ClipTarget {
+  id?: string;
   title: string;
   platform: string;
   creator?: string | null;
+  category?: string | null;
   url?: string | null;
+  thumbnailUrl?: string | null;
+  metric?: string | null;
+  score?: number | null;
   kind: "clip" | "live";
 }
 
@@ -36,6 +42,28 @@ function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => voi
   const [sent, setSent] = useState(false);
   const cleared = owns || authorized;
 
+  function sendToProduction() {
+    if (!cleared) return;
+    const rights = owns ? "owned" : "authorized";
+    upsertLibraryItem(
+      {
+        id: target.id ?? `${target.platform}:${target.kind}:${target.url ?? target.title}`,
+        kind: target.kind === "live" ? "stream" : "clip",
+        platform: target.platform,
+        title: target.title,
+        creator: target.creator,
+        category: target.category,
+        url: target.url,
+        thumbnailUrl: target.thumbnailUrl,
+        metric: target.metric,
+        score: target.score
+      },
+      "production",
+      { rights }
+    );
+    setSent(true);
+  }
+
   return (
     <div className="sheet-backdrop" onClick={onClose}>
       <div className="sheet" onClick={(e) => e.stopPropagation()}>
@@ -53,23 +81,24 @@ function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => voi
         {!sent ? (
           <>
             <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.5 }}>
-              Clipped It only produces finished clips from content you own or are
-              authorized to use. Public visibility is not permission — confirm your
-              rights before exporting.
+              Save the source into your production queue once you confirm you own it or have explicit authorization to edit and export it.
             </p>
 
             <label className="rights-row" style={{ cursor: "pointer" }}>
               <input
                 type="checkbox"
                 checked={owns}
-                onChange={(e) => setOwns(e.target.checked)}
+                onChange={(e) => {
+                  setOwns(e.target.checked);
+                  if (e.target.checked) setAuthorized(false);
+                }}
                 style={{ marginTop: 3 }}
               />
               <span>
                 <strong>This is my channel / content.</strong>
                 <br />
                 <span style={{ color: "var(--muted)", fontSize: 13 }}>
-                  You own or control the source stream.
+                  You own or control the source stream or clip.
                 </span>
               </span>
             </label>
@@ -78,7 +107,10 @@ function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => voi
               <input
                 type="checkbox"
                 checked={authorized}
-                onChange={(e) => setAuthorized(e.target.checked)}
+                onChange={(e) => {
+                  setAuthorized(e.target.checked);
+                  if (e.target.checked) setOwns(false);
+                }}
                 style={{ marginTop: 3 }}
               />
               <span>
@@ -96,19 +128,14 @@ function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => voi
               </span>
               <span style={{ color: "var(--muted)", fontSize: 12 }}>
                 {cleared
-                  ? "Export unlocked"
-                  : "Editorial / commentary embed only until confirmed"}
+                  ? "Production queue unlocked"
+                  : "You can still favorite or save the source without producing it"}
               </span>
             </div>
 
             <div className="card-actions" style={{ marginTop: 16 }}>
               {target.url ? (
-                <a
-                  className="btn"
-                  href={target.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a className="btn" href={target.url} target="_blank" rel="noreferrer">
                   Open source
                 </a>
               ) : null}
@@ -116,9 +143,9 @@ function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => voi
                 className="btn primary"
                 disabled={!cleared}
                 style={cleared ? undefined : { opacity: 0.5, cursor: "not-allowed" }}
-                onClick={() => cleared && setSent(true)}
+                onClick={sendToProduction}
               >
-                Send to production
+                Add to production queue
               </button>
             </div>
           </>
@@ -127,19 +154,15 @@ function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => voi
             <div className="rights-row" style={{ borderTop: "none" }}>
               <span className="rights-badge ok">Queued</span>
               <span style={{ fontSize: 14 }}>
-                Rights confirmed and moment captured.
+                Saved to Library → Production Queue.
               </span>
             </div>
             <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.5 }}>
-              The production pipeline (auto-cut, captions, vertical reframe, export)
-              plugs in here. It renders through your connected editor and may use
-              rendering credits, so it runs only after you enable it — no content is
-              downloaded or reposted without that explicit step.
+              This now persists after you close the modal. The next production layer can attach an editor/render integration to each queued source for trimming, captions, reframing, branding, and export.
             </p>
             <div className="card-actions" style={{ marginTop: 8 }}>
-              <button className="btn primary" onClick={onClose}>
-                Done
-              </button>
+              <a className="btn" href="/library">Open Library</a>
+              <button className="btn primary" onClick={onClose}>Done</button>
             </div>
           </>
         )}
