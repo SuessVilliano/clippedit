@@ -10,13 +10,16 @@ export interface RuntimeSourceCredentials {
 }
 
 function key() {
-  if (!env.cronSecret) return null;
-  return createHash("sha256").update(env.cronSecret).digest();
+  const secret = env.cronSecret ?? env.supabase.serviceRoleKey;
+  if (!secret) return null;
+  return createHash("sha256").update(secret).digest();
 }
 
 export function encryptSourceCredentials(value: RuntimeSourceCredentials): string {
   const encryptionKey = key();
-  if (!encryptionKey) throw new Error("CRON_SECRET is required to securely save source credentials.");
+  if (!encryptionKey) {
+    throw new Error("A server secret (CRON_SECRET or SUPABASE_SERVICE_ROLE_KEY) is required to securely save source credentials.");
+  }
   const iv = randomBytes(12);
   const cipher = createCipheriv("aes-256-gcm", encryptionKey, iv);
   const ciphertext = Buffer.concat([
