@@ -11,6 +11,7 @@ const links: Array<[string, string]> = [
   ["/radar", "Clip Radar"],
   ["/spy", "Clip Spy"],
   ["/release-spy", "Release Spy"],
+  ["/release-queue", "Release Queue"],
   ["/library", "Library"],
   ["/settings", "Settings"]
 ];
