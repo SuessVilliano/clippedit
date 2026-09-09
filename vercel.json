@@ -7,7 +7,11 @@
     },
     {
       "path": "/api/cron/release-watch",
-      "schedule": "0 13 * * *"
+      "schedule": "0 23 * * 5"
+    },
+    {
+      "path": "/api/cron/release-watch",
+      "schedule": "0 14 * * 6"
     }
   ]
 }
