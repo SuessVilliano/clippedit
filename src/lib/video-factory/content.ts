@@ -99,7 +99,8 @@ const DEFAULT_TONE = "smart, energetic, practical, no-hype";
 function firstSentence(text: string): string {
   const t = text.trim();
   if (!t) return "";
-  return t.split(/(?<=[.!?])\s+/)[0].slice(0, 220);
+  // Up to the first ~2 sentences so template output reflects the actual release.
+  return t.split(/(?<=[.!?])\s+/).slice(0, 2).join(" ").slice(0, 320);
 }
 
 /** Deterministic fallback so the factory works with no LLM key. Valid package. */

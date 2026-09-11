@@ -74,6 +74,7 @@ export function VideoFactoryTryIt() {
   const [busy, setBusy] = useState(false);
   const [pack, setPack] = useState<ContentPackage | null>(null);
   const [mode, setMode] = useState<string>("");
+  const [extraction, setExtraction] = useState<{ chars: number; sources: string[]; warning?: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function generate() {
@@ -89,6 +90,7 @@ export function VideoFactoryTryIt() {
       if (!res.ok) throw new Error(body?.error || "Generation failed");
       setPack(body.package);
       setMode(body.mode);
+      setExtraction(body.extraction ?? null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Generation failed");
     } finally {
@@ -140,8 +142,17 @@ export function VideoFactoryTryIt() {
             {busy ? "Generating…" : "Generate 3 Shorts"}
           </button>
           {mode ? <span className="pill">{mode === "ai" ? "AI-written" : "template"}</span> : null}
+          {extraction ? <span className="pill">read {extraction.chars} chars{extraction.sources.length ? ` · ${extraction.sources.length} link(s)` : ""}</span> : null}
         </div>
         {error ? <p className="card-sub" style={{ color: "#ff8080" }}>{error}</p> : null}
+        {extraction?.warning ? (
+          <p className="card-sub" style={{ color: "#ffc266" }}>⚠ {extraction.warning}</p>
+        ) : null}
+        {mode === "template" ? (
+          <p className="card-sub" style={{ color: "#ffc266" }}>
+            ⚠ Template mode — this deployment has no <code>LLM_API_KEY</code>, so copy is generic boilerplate, not written from your release. Add the key in Vercel for real per-release scripts.
+          </p>
+        ) : null}
       </div>
 
       {pack ? (
