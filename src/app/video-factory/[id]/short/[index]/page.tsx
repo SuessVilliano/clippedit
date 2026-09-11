@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import { statusLabel } from "@/lib/video-factory/status";
+import { ThumbnailButton } from "@/components/ThumbnailButton";
 import type { ContentPackage, ShortPackage } from "@/lib/video-factory/types";
 
 type Job = {
@@ -158,6 +159,7 @@ export default function ShortDetailPage({ params }: { params: Promise<{ id: stri
         <div className="card-actions">
           <Copyable label="Copy image prompt" text={short.thumbnail.imagePrompt} />
         </div>
+        <ThumbnailButton prompt={short.thumbnail.imagePrompt} />
       </Section>
 
       <Section title="Visual timeline">

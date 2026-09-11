@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { KANBAN_COLUMNS, statusLabel, type JobStatus } from "@/lib/video-factory/status";
+import { VideoFactoryTryIt } from "@/components/VideoFactoryTryIt";
 
 type Job = {
   id: string;
@@ -48,6 +49,8 @@ export default function VideoFactoryPage() {
           held here for review before anything is published.
         </p>
       </div>
+
+      <VideoFactoryTryIt />
 
       <div className="banner preview" style={{ marginBottom: 18 }}>
         <span className="ico">⌁</span>
