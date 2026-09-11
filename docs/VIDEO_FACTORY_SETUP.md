@@ -18,7 +18,21 @@ What's built so far, and exactly what you need to do to see it working end to en
 All of this works **with no new keys** using the deterministic template. With
 your LLM key it writes far better copy (same key Release Spy already uses).
 
-## Step 1 — Run the database migration (required)
+## Step 0 — Prove it right now (no setup, no keys)
+
+On the live app, open **/video-factory** → the **"Try it now"** panel at the top.
+Paste a HighLevel update title + notes (or a public URL to fetch) → **Generate 3
+Shorts**. You immediately see scripts, social posts, and thumbnail concepts.
+Nothing is saved — this needs no migration and no keys (it uses the LLM key the
+app already has for sharper copy; without it you still get the full structure).
+
+To render a **real thumbnail image** from the concept, set `OPENAI_API_KEY` and
+click **Render thumbnail** on any Short. That's the only key needed for images.
+
+The steps below are for the *persistent, automated* pipeline (jobs saved, the
+Release watcher auto-creating them). Do them once you're happy with Step 0.
+
+## Step 1 — Run the database migration (required for saved jobs)
 
 The new tables live in `supabase/migrations/20260910_video_factory.sql`.
 Apply it to your Supabase project (any one of these):
