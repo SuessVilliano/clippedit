@@ -17,6 +17,26 @@ type QueueItem = {
 export default function ReleaseQueuePage() {
   const [items, setItems] = useState<QueueItem[]>([]);
   const [message, setMessage] = useState("Loading automated Release Radar packages…");
+  const [sending, setSending] = useState<string | null>(null);
+  const [sent, setSent] = useState<Record<string, { jobId?: string; error?: string }>>({});
+
+  async function sendToFactory(releaseQueueId: string) {
+    setSending(releaseQueueId);
+    try {
+      const res = await fetch("/api/video-factory/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ releaseQueueId })
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body?.error || "Could not create job");
+      setSent((prev) => ({ ...prev, [releaseQueueId]: { jobId: body.job?.id } }));
+    } catch (e) {
+      setSent((prev) => ({ ...prev, [releaseQueueId]: { error: e instanceof Error ? e.message : "error" } }));
+    } finally {
+      setSending(null);
+    }
+  }
 
   useEffect(() => {
     fetch("/api/release-queue", { cache: "no-store" })
@@ -57,7 +77,22 @@ export default function ReleaseQueuePage() {
                 ) : null}
                 <div className="card-actions" style={{ marginTop: 14 }}>
                   <a className="btn" href={item.source_url} target="_blank" rel="noreferrer">Source</a>
-                  <a className="btn primary" href="/release-spy">Open Release Spy</a>
+                  <a className="btn" href="/release-spy">Open Release Spy</a>
+                  {sent[item.id] ? (
+                    sent[item.id].jobId ? (
+                      <a className="btn primary" href={`/video-factory/${sent[item.id].jobId}`}>Open in Factory →</a>
+                    ) : (
+                      <span className="pill">⚠ {sent[item.id].error}</span>
+                    )
+                  ) : (
+                    <button
+                      className="btn primary"
+                      onClick={() => sendToFactory(item.id)}
+                      disabled={sending === item.id}
+                    >
+                      {sending === item.id ? "Sending…" : "Send to Video Factory"}
+                    </button>
+                  )}
                 </div>
               </div>
             </article>
