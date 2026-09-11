@@ -12,6 +12,7 @@ const links: Array<[string, string]> = [
   ["/spy", "Clip Spy"],
   ["/release-spy", "Release Spy"],
   ["/release-queue", "Release Queue"],
+  ["/video-factory", "Video Factory"],
   ["/library", "Library"],
   ["/settings", "Settings"]
 ];
