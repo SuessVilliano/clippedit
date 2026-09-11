@@ -17,15 +17,35 @@ export default function VideoFactoryJobPage({ params }: { params: Promise<{ id: 
   const { id } = use(params);
   const [job, setJob] = useState<Job | null>(null);
   const [message, setMessage] = useState("Loading job…");
+  const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    fetch(`/api/video-factory/jobs/${id}`, { cache: "no-store" })
+  function load() {
+    return fetch(`/api/video-factory/jobs/${id}`, { cache: "no-store" })
       .then(async (r) => ({ ok: r.ok, body: await r.json() }))
       .then(({ ok, body }) => {
         if (!ok) throw new Error(body?.error || "Could not load job");
         setJob(body.job);
       })
       .catch((e) => setMessage(e instanceof Error ? e.message : "Could not load job"));
+  }
+
+  async function generate() {
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/video-factory/jobs/${id}/process`, { method: "POST" });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body?.error || "Generation failed");
+      await load();
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Generation failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (!job) {
@@ -53,6 +73,12 @@ export default function VideoFactoryJobPage({ params }: { params: Promise<{ id: 
         <h1>{job.title}</h1>
         <div className="pill" style={{ marginTop: 6 }}>⚡ {statusLabel(job.status)}</div>
         {pack?.coreThesis ? <p style={{ marginTop: 10 }}>{pack.coreThesis}</p> : null}
+        <div className="card-actions" style={{ marginTop: 12 }}>
+          <button className="btn primary" onClick={generate} disabled={busy}>
+            {busy ? "Generating…" : shorts.length ? "Regenerate content" : "Generate content"}
+          </button>
+          <a className="btn" href={job.source_url} target="_blank" rel="noreferrer">Source</a>
+        </div>
       </div>
 
       {shorts.length ? (
