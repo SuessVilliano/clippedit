@@ -10,11 +10,11 @@ import "./globals.css";
 import { ClipCoach } from "@/components/ClipCoach";
 
 export const metadata: Metadata = {
-  title: "Elevate Clippers — Find the Moment. Make Your Move.",
+  title: "LIV8 Clippers — Find the Moment. Make Your Move.",
   description:
     "Find popular YouTube videos and breakout livestreams, prepare clips, explore paid campaigns and learn the clipping workflow.",
-  applicationName: "Elevate Clippers",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Elevate Clippers" }
+  applicationName: "LIV8 Clippers",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "LIV8 Clippers" }
 };
 
 export const viewport: Viewport = {

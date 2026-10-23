@@ -457,7 +457,7 @@ h1, h2, h3 {
 button:disabled { opacity: .5; cursor: not-allowed; }
 .work-form input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible, button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
 
-/* Elevate Clippers launch */
+/* LIV8 Clippers launch */
 :root { --accent: #ff8b5e; --accent-2: #ffb38d; --grad-brand: linear-gradient(110deg,#ff9c6e,#ff603b); }
 .elevate-home { background:#f3efe7; color:#24251f; }
 .elevate-hero { max-width:1440px; margin:auto; padding:85px clamp(24px,6vw,96px) 78px; display:grid; grid-template-columns:1.15fr 1fr; gap:50px; align-items:center; }

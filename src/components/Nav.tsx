@@ -15,7 +15,7 @@ export function Nav() {
   const pathname = usePathname();
   return (
     <nav className="nav">
-      <Link href="/" className="brand"><span className="brand-dot" />Elevate Clippers</Link>
+      <Link href="/" className="brand"><span className="brand-dot" />LIV8 Clippers</Link>
       <div className="nav-links">
         {links.map(([href, label]) => <Link key={href} href={href} className={isActive(pathname, href) ? "active" : ""}>{label}</Link>)}
       </div>
