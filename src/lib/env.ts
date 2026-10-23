@@ -26,11 +26,30 @@ export const env = {
     clientId: read("KICK_CLIENT_ID"),
     clientSecret: read("KICK_CLIENT_SECRET")
   },
-  cronSecret: read("CRON_SECRET")
+  cronSecret: read("CRON_SECRET"),
+  videoFactory: {
+    enabled: read("VIDEO_FACTORY_ENABLED") !== "false", // on unless explicitly disabled
+    voiceProvider: read("VOICE_PROVIDER") ?? "sv-engine",
+    imageProvider: read("IMAGE_PROVIDER") ?? "openai",
+    videoProvider: read("VIDEO_PROVIDER") ?? "sv-engine",
+    renderProvider: read("RENDER_PROVIDER") ?? "sv-engine",
+    // The sv-content-engine worker (local/GPU box). Optional — when unset,
+    // engine-backed providers report "not configured" and fall back or skip.
+    engineUrl: read("SV_ENGINE_URL"),
+    engineToken: read("SV_ENGINE_TOKEN"),
+    openaiApiKey: read("OPENAI_API_KEY")
+  }
 } as const;
 
 export const isSupabaseConfigured = () =>
   Boolean(env.supabase.url && env.supabase.serviceRoleKey);
+
+/** Whether the Video Factory feature is turned on. */
+export const isVideoFactoryEnabled = () => env.videoFactory.enabled;
+
+/** Whether the sv-content-engine render/generation worker is reachable. */
+export const isSvEngineConfigured = () =>
+  Boolean(env.videoFactory.engineUrl && env.videoFactory.engineToken);
 
 export const isTwitchConfigured = () =>
   Boolean(env.twitch.clientId && env.twitch.clientSecret);

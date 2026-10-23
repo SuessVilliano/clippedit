@@ -4,6 +4,14 @@
     {
       "path": "/api/cron/ingest",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/release-watch",
+      "schedule": "0 23 * * 5"
+    },
+    {
+      "path": "/api/cron/release-watch",
+      "schedule": "0 14 * * 6"
     }
   ]
 }

@@ -1,31 +1,34 @@
 import { z } from "zod";
 import { env, isKickConfigured } from "@/lib/env";
 
-/**
- * Kick app access token via client-credentials. Kick's developer API is still
- * evolving, so all assumptions are isolated here and every caller is expected
- * to tolerate failure (see the per-platform try/catch in the ingest loop).
- */
 const TokenSchema = z.object({
   access_token: z.string(),
   expires_in: z.number().optional()
 });
 
-let cachedToken: { token: string; expiresAt: number } | null = null;
+const tokenCache = new Map<string, { token: string; expiresAt: number }>();
 
-export async function getKickAppToken(): Promise<string> {
-  if (!isKickConfigured()) {
+export async function getKickAppToken(credentials?: {
+  clientId: string;
+  clientSecret: string;
+}): Promise<string> {
+  const clientId = credentials?.clientId ?? env.kick.clientId;
+  const clientSecret = credentials?.clientSecret ?? env.kick.clientSecret;
+
+  if (!clientId || !clientSecret || (!credentials && !isKickConfigured())) {
     throw new Error("Kick is not configured (missing client id/secret).");
   }
 
   const now = Date.now();
+  const cacheKey = clientId;
+  const cachedToken = tokenCache.get(cacheKey);
   if (cachedToken && cachedToken.expiresAt > now + 60_000) {
     return cachedToken.token;
   }
 
   const params = new URLSearchParams({
-    client_id: env.kick.clientId!,
-    client_secret: env.kick.clientSecret!,
+    client_id: clientId,
+    client_secret: clientSecret,
     grant_type: "client_credentials"
   });
 
@@ -43,9 +46,9 @@ export async function getKickAppToken(): Promise<string> {
   }
 
   const parsed = TokenSchema.parse(await response.json());
-  cachedToken = {
+  tokenCache.set(cacheKey, {
     token: parsed.access_token,
     expiresAt: now + (parsed.expires_in ?? 3600) * 1000
-  };
-  return cachedToken.token;
+  });
+  return parsed.access_token;
 }

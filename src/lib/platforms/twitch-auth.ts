@@ -1,35 +1,35 @@
 import { z } from "zod";
 import { env, isTwitchConfigured } from "@/lib/env";
 
-/**
- * Twitch app access token via the OAuth client-credentials flow.
- *
- * App tokens are used for public read endpoints (streams, clips). They are
- * cached in-process until shortly before expiry. User-authorized actions
- * (creating clips, editor scopes) require a separate user-token flow and are
- * intentionally out of scope for public discovery.
- */
 const TokenSchema = z.object({
   access_token: z.string(),
   expires_in: z.number(),
   token_type: z.string()
 });
 
-let cachedToken: { token: string; expiresAt: number } | null = null;
+const tokenCache = new Map<string, { token: string; expiresAt: number }>();
 
-export async function getTwitchAppToken(): Promise<string> {
-  if (!isTwitchConfigured()) {
+export async function getTwitchAppToken(credentials?: {
+  clientId: string;
+  clientSecret: string;
+}): Promise<string> {
+  const clientId = credentials?.clientId ?? env.twitch.clientId;
+  const clientSecret = credentials?.clientSecret ?? env.twitch.clientSecret;
+
+  if (!clientId || !clientSecret || (!credentials && !isTwitchConfigured())) {
     throw new Error("Twitch is not configured (missing client id/secret).");
   }
 
   const now = Date.now();
+  const cacheKey = clientId;
+  const cachedToken = tokenCache.get(cacheKey);
   if (cachedToken && cachedToken.expiresAt > now + 60_000) {
     return cachedToken.token;
   }
 
   const params = new URLSearchParams({
-    client_id: env.twitch.clientId!,
-    client_secret: env.twitch.clientSecret!,
+    client_id: clientId,
+    client_secret: clientSecret,
     grant_type: "client_credentials"
   });
 
@@ -47,9 +47,9 @@ export async function getTwitchAppToken(): Promise<string> {
   }
 
   const parsed = TokenSchema.parse(await response.json());
-  cachedToken = {
+  tokenCache.set(cacheKey, {
     token: parsed.access_token,
     expiresAt: now + parsed.expires_in * 1000
-  };
-  return cachedToken.token;
+  });
+  return parsed.access_token;
 }

@@ -199,3 +199,23 @@ create table if not exists media_actions (
   payload jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
 );
+
+create table if not exists release_content_queue (
+  id uuid primary key default gen_random_uuid(),
+  source_url text unique not null,
+  source_title text not null,
+  source_text text not null,
+  source_name text not null default 'HighLevel Release Radar',
+  content_package jsonb not null default '{}'::jsonb,
+  generator_mode text not null default 'template',
+  status text not null default 'ready_for_review',
+  detected_at timestamptz not null default now(),
+  generated_at timestamptz,
+  reviewed_at timestamptz,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists release_content_queue_status_idx
+on release_content_queue(status, detected_at desc);

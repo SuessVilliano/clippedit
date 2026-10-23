@@ -74,3 +74,10 @@ TypeScript and existing tests pass at the initial checkpoint. Add request-level 
 - YouTube monetization/reused content: https://support.google.com/youtube/answer/1311392
 
 Whop listings can overlap with Content Rewards. Verify each campaign's actual payer; do not count listing aggregators as additional income sources. Current Content Rewards terms identify a 10% creator fee on CPM, with different treatment for some per-post/retainer campaigns; capture the actual applicable terms per campaign. Avoid hardcoding changing rates or fees into a revenue promise.
+
+## Elevate launch increment
+
+- Reconciled with origin/main through 38a5c48; preserves Library, Spy, Release Spy, Video Factory and source settings.
+- Elevate Clippers public landing page and global Clip Coach. Coach uses AI Gateway when available, with explicit guided fallback. It can prepare Studio links and explain the workflow; it cannot render or publish autonomously.
+- Studio calls the official Opus create-project and exportable-clips endpoints with a user-provided API key held only in page memory. Requires source rights and credit confirmation. No company key configured.
+- Private accounts, team hiring/assignment persistence, company billing, automatic publishing and payouts remain future work. Rendering integration requires a user's API-enabled Opus plan and credits.
