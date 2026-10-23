@@ -33,7 +33,6 @@ export function ClipButton({
 function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => void }) {
   const [owns, setOwns] = useState(false);
   const [authorized, setAuthorized] = useState(false);
-  const [sent, setSent] = useState(false);
   const cleared = owns || authorized;
 
   return (
@@ -50,8 +49,7 @@ function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => voi
           </p>
         ) : null}
 
-        {!sent ? (
-          <>
+        <>
             <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.5 }}>
               Clipped It only produces finished clips from content you own or are
               authorized to use. Public visibility is not permission — confirm your
@@ -116,33 +114,13 @@ function ClipSheet({ target, onClose }: { target: ClipTarget; onClose: () => voi
                 className="btn primary"
                 disabled={!cleared}
                 style={cleared ? undefined : { opacity: 0.5, cursor: "not-allowed" }}
-                onClick={() => cleared && setSent(true)}
+                onClick={() => { if (cleared) window.location.assign(`/studio?source=${encodeURIComponent(target.url ?? "")}`); }}
               >
-                Send to production
+                Prepare in Studio
               </button>
             </div>
           </>
-        ) : (
-          <>
-            <div className="rights-row" style={{ borderTop: "none" }}>
-              <span className="rights-badge ok">Queued</span>
-              <span style={{ fontSize: 14 }}>
-                Rights confirmed and moment captured.
-              </span>
-            </div>
-            <p style={{ color: "var(--muted)", fontSize: 14, lineHeight: 1.5 }}>
-              The production pipeline (auto-cut, captions, vertical reframe, export)
-              plugs in here. It renders through your connected editor and may use
-              rendering credits, so it runs only after you enable it — no content is
-              downloaded or reposted without that explicit step.
-            </p>
-            <div className="card-actions" style={{ marginTop: 8 }}>
-              <button className="btn primary" onClick={onClose}>
-                Done
-              </button>
-            </div>
-          </>
-        )}
+
       </div>
     </div>
   );

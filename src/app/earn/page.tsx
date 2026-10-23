@@ -1,0 +1,12 @@
+import Link from "next/link";
+const opportunities = [
+  ["Content Rewards", "Browse clipping and UGC campaigns. Check approved footage, eligible platforms, geography, payout caps, fees and campaign deadlines before editing.", "https://contentrewards.com/creators"],
+  ["Whop opportunities", "Explore clipping communities and campaign listings. Some listings route to Content Rewards; verify the actual payer and terms for each opportunity.", "https://whop.com/discover/"],
+  ["Direct creator retainers", "Offer creators a recurring package of approved clips. Agree on deliverables, revision limits, source rights and payment terms before starting.", ""],
+  ["Brand and affiliate work", "Produce commissioned clips or earn on attributable sales. Get written usage permission and use the required sponsorship or affiliate disclosures.", ""]
+];
+export default function EarnPage() { return <main className="container"><section className="hero"><span className="eyebrow">Clipper opportunities</span><h1>Build a craft. <span className="grad-text">Build an income.</span></h1><p>Start with a paid brief. Find the right source, make a strong edit, get it approved, then track the result.</p><div className="hero-cta"><Link className="cta primary" href="/academy">Start the clipper playbook →</Link><Link className="cta ghost" href="/discover">Find source videos</Link></div></section>
+    <div className="banner">Opportunity directory · applications, approvals and payouts happen with the campaign or client. Clipped It does not currently process payouts or guarantee earnings.</div>
+    <div className="feature-grid">{opportunities.map(([title, text, href]) => <article className="feature" key={title}><strong>{title}</strong><p>{text}</p>{href && <a className="btn" href={href} target="_blank" rel="noreferrer">Explore opportunities ↗</a>}</article>)}</div>
+    <section className="feature"><h2>Choose the deal before the clip</h2><p>Record the campaign link, rate, remaining budget, minimum qualifying views, per-clip cap, earning window, approval rules and required disclosures. A popular video alone does not create a paid opportunity.</p><p>Example only: 100,000 eligible views at $1 per 1,000 produces $100 gross before fees, caps and your editing costs. Only the campaign can confirm payable views and settled earnings.</p><p>Creator retainers and per-post deals can pay for approved work directly. YouTube channel revenue is a separate route: minimally edited reposts can fail its reused-content monetization rules, even with permission.</p></section>
+  </main>; }

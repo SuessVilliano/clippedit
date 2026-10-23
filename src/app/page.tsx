@@ -1,111 +1,15 @@
 import Link from "next/link";
-import { getLiveData } from "@/lib/api-data";
-import { formatNumber } from "@/lib/format";
-
-export const dynamic = "force-dynamic";
-
-const features: Array<[string, string, string]> = [
-  ["📡", "Cross-platform radar", "Twitch and Kick in one live view — who's breaking out right now, ranked by momentum instead of raw totals."],
-  ["✂️", "Most clipped", "The clips gaining views fastest across the hottest categories, so you catch what's spreading while it's still spreading."],
-  ["🎯", "Clip Radar", "Smart moments to clip — live breakouts to capture and viral clips to ride — scored from current momentum and velocity."],
-  ["🛡️", "Rights-aware", "Every export runs through an authorization gate. Your content and licensed content only — never blind reposting."]
+const steps = [
+  ["01", "Find the moment", "Discover YouTube creators and popular videos. Catch live momentum across Twitch and Kick.", "/discover", "Explore discovery"],
+  ["02", "Make it unskippable", "Bring your source into Studio. Use Opus to find highlights, reframe, caption and produce your clips.", "/studio", "Open the studio"],
+  ["03", "Put your craft to work", "Find paid campaigns, learn the rules and build relationships with creators who need great editors.", "/earn", "Explore opportunities"]
 ];
-
-export default async function HomePage() {
-  const live = await getLiveData();
-  const top = [...live.streams]
-    .sort((a, b) => (b.viewers ?? 0) - (a.viewers ?? 0))
-    .slice(0, 12);
-  const totalViewers = live.streams.reduce((sum, s) => sum + (s.viewers ?? 0), 0);
-
-  return (
-    <main className="container">
-      <section className="hero">
-        <span className="eyebrow">
-          <span className="live-dot" /> Real-time livestream intelligence
-        </span>
-        <h1>
-          Catch the moment <span className="grad-text">before it breaks.</span>
-        </h1>
-        <p>
-          Clipped It watches Twitch and Kick in real time — detecting breakout
-          streams, the most-clipped moments, and emerging stories before the
-          leaderboards catch up. Then it hands you the best moments to clip.
-        </p>
-        <div className="hero-cta">
-          <Link href="/radar" className="cta primary">
-            Open Clip Radar →
-          </Link>
-          <Link href="/live" className="cta ghost">
-            See who's live
-          </Link>
-        </div>
-
-        <div className="ticker-wrap">
-          <div className="ticker-head">
-            {live.mode === "unconfigured" ? (
-              <>Live ticker · connect a platform to light this up</>
-            ) : (
-              <>
-                <span className="live-dot" /> Live now ·{" "}
-                {formatNumber(totalViewers)} watching across {top.length}+ streams
-              </>
-            )}
-          </div>
-          <div className="ticker">
-            {top.length === 0 ? (
-              <div className="ticker-item" style={{ color: "var(--muted)" }}>
-                Add Twitch credentials to stream real-time data →
-              </div>
-            ) : (
-              top.map((s) => (
-                <div key={s.id} className="ticker-item">
-                  <span className={`badge plat ${s.platform}`} style={{ position: "static" }}>
-                    {s.platform}
-                  </span>
-                  <span style={{ maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {s.displayName}
-                  </span>
-                  <span className="tv">{formatNumber(s.viewers)}</span>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      <div className="section-head">
-        <h2 style={{ fontSize: 24 }}>Built to find what's next</h2>
-        <Link href="/trending">Explore trending →</Link>
-      </div>
-      <div className="feature-grid">
-        {features.map(([icon, title, desc], i) => (
-          <div className="feature" key={title} style={{ animationDelay: `${i * 60}ms` }}>
-            <div className="fi">{icon}</div>
-            <strong>{title}</strong>
-            <p>{desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="section-head">
-        <h2 style={{ fontSize: 24 }}>From signal to finished clip</h2>
-      </div>
-      <div className="feature-grid">
-        {[
-          ["1", "Detect", "Momentum + velocity scoring surfaces the streams and clips breaking out across platforms right now."],
-          ["2", "Decide", "Clip Radar ranks the exact moments worth clipping, blending live breakouts with clips already going viral."],
-          ["3", "Produce", "Confirm your rights, then send the moment to production — cut, caption, reframe, export. You control every step."]
-        ].map(([n, title, desc], i) => (
-          <div className="feature" key={title} style={{ animationDelay: `${i * 60}ms` }}>
-            <div className="fi" style={{ background: "var(--grad-brand)", color: "#06131a", fontWeight: 700 }}>
-              {n}
-            </div>
-            <strong>{title}</strong>
-            <p>{desc}</p>
-          </div>
-        ))}
-      </div>
-    </main>
-  );
-}
+export default function HomePage() { return <main className="elevate-home">
+  <section className="elevate-hero"><div className="hero-copy"><span className="ec-kicker"><i /> THE NEXT GENERATION OF CLIPPERS</span><h1>Big moments.<br />Sharp edits.<br /><em>Real opportunity.</em></h1><p>Turn long-form content into your next move. Discover the source, create with Opus, and learn the business of getting paid to clip.</p><div className="ec-actions"><Link className="ec-button" href="/studio">Start clipping <span>↗</span></Link><Link className="ec-text-link" href="/academy">Learn the game <span>→</span></Link></div><div className="ec-footnote"><span>YOUTUBE</span><span>TWITCH</span><span>KICK</span><b>One creative workflow.</b></div></div>
+  <div className="clip-art" aria-label="Illustration of a vertical video edit"><div className="orbit-label">FIND IT. CLIP IT. ELEVATE IT.</div><div className="floating-label fl-top">✦ YOUR NEXT GREAT EDIT</div><div className="video-phone"><div className="phone-top"><span>CREATOR STUDIO</span><span>● REC</span></div><div className="abstract-stage"><div className="stage-ring"/><div className="stage-figure"/><span className="stage-play">▶</span></div><div className="phone-caption">THE MOMENT<br /><mark>CHANGES EVERYTHING.</mark></div><div className="phone-bottom"><span>9:16 VERTICAL</span><span>✦ ELEVATE</span></div></div><div className="floating-label fl-bottom"><span className="mini-wave">▂ ▆ ▃ █ ▅ ▂ ▇ ▃ ▆</span><span>Good content. Great cuts.</span></div><div className="art-coordinate">EC—001 / CREATIVE IN MOTION</div></div></section>
+  <div className="ec-marquee"><span>CREATE WITH INTENTION</span><b>✳</b><span>CLIP WITH CONFIDENCE</span><b>✳</b><span>ELEVATE YOUR CRAFT</span><b>✳</b></div>
+  <section className="ec-section"><div className="ec-section-heading"><span className="ec-kicker">FROM SCROLLING TO CREATING</span><h2>A better workflow.<br />A bigger possibility.</h2><p>You bring the eye for a great moment. We bring the tools, the playbook and a place to start.</p></div><div className="ec-step-grid">{steps.map(([n,title,text,href,cta]) => <article className="ec-step" key={n}><span>{n} /</span><h3>{title}</h3><p>{text}</p><Link href={href}>{cta} ↗</Link></article>)}</div></section>
+  <section className="ec-two-up"><div className="ec-learn"><span className="ec-kicker">START HERE. LEVEL UP.</span><h2>No gatekeeping.<br />Learn the game.</h2><p>Source selection. Hooks. Captions. Campaign rules. Publishing. Learn a repeatable workflow, one strong clip at a time.</p><Link className="ec-button" href="/academy">Get the playbook ↗</Link></div><div className="ec-business"><span className="ec-kicker">BUILD MORE THAN A FEED</span><h2>Your next client<br />needs a clipper.</h2><p>Explore performance campaigns, creator retainers and commissioned brand work. Choose the deal before you make the edit.</p><Link className="ec-button ec-light-button" href="/earn">Find opportunities ↗</Link><small>Campaign approval, eligibility and payout terms apply. Earnings are not guaranteed.</small></div></section>
+  <section className="ec-section ec-faq"><span className="ec-kicker">A FEW THINGS TO KNOW</span><h2>Ready when you are.</h2>{[["Do I need editing experience?", "Start with the free playbook. Learn how to select source material, create a strong edit and follow a paid brief before scaling up."], ["How does Opus connect?", "Studio sends your selected source and preferences to the official Opus API using your own API-enabled account. Processing uses your Opus credits. You review the settings and confirm before submitting."], ["Where does the money come from?", "External campaigns pay under their own terms. You can also work directly with creators and brands. Elevate helps you learn and produce; it does not guarantee work or currently process payouts."], ["What can the assistant help with?", "Open Clip Coach to navigate the platform, plan an edit, learn campaign requirements or prepare a source in Studio. It cannot post content or spend rendering credits for you."]].map(([q,a]) => <details key={q}><summary>{q}<span>+</span></summary><p>{a}</p></details>)}</section>
+  <footer className="ec-footer"><Link className="ec-wordmark" href="/">elevate<span>clippers ↗</span></Link><p>A LIV8 creative platform. Built for the people who see the moment.</p><div><Link href="/studio">Studio</Link><Link href="/academy">Playbook</Link><Link href="/earn">Opportunities</Link><Link href="/privacy">Privacy</Link></div></footer>
+</main>; }

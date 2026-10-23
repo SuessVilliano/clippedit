@@ -5,10 +5,12 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 const links: Array<[string, string]> = [
+  ["/discover", "Discover"],
+  ["/studio", "Studio"],
+  ["/earn", "Earn"],
+  ["/academy", "Learn"],
   ["/live", "Live"],
-  ["/trending", "Trending"],
-  ["/clips", "Clips"],
-  ["/radar", "Clip Radar"]
+  ["/radar", "Radar"]
 ];
 
 function isActive(pathname: string, href: string) {
@@ -21,7 +23,7 @@ export function Nav() {
     <nav className="nav">
       <Link href="/" className="brand">
         <span className="brand-dot" />
-        Clipped It
+        Elevate Clippers
       </Link>
       <div className="nav-links">
         {links.map(([href, label]) => (
@@ -70,10 +72,10 @@ const icons: Record<string, ReactNode> = {
 
 const tabs: Array<[string, string]> = [
   ["/", "Home"],
-  ["/live", "Live"],
-  ["/trending", "Trending"],
-  ["/clips", "Clips"],
-  ["/radar", "Radar"]
+  ["/discover", "Discover"],
+  ["/studio", "Studio"],
+  ["/earn", "Earn"],
+  ["/academy", "Learn"]
 ];
 
 export function BottomNav() {
@@ -82,7 +84,7 @@ export function BottomNav() {
     <nav className="bottomnav">
       {tabs.map(([href, label]) => (
         <Link key={href} href={href} className={`tab ${isActive(pathname, href) ? "active" : ""}`}>
-          {icons[href]}
+          {icons[href] ?? icons["/clips"]}
           {label}
         </Link>
       ))}

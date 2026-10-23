@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { Nav, BottomNav } from "@/components/Nav";
 import "./globals.css";
+import { ClipCoach } from "@/components/ClipCoach";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const display = Space_Grotesk({
@@ -13,11 +14,11 @@ const display = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Clipped It — Livestream Intelligence",
+  title: "Elevate Clippers — Find the Moment. Make Your Move.",
   description:
-    "Real-time cross-platform intelligence for livestream culture. Detect breakout streams, the most-clipped moments, and emerging stories across Twitch and Kick before the leaderboards catch up.",
-  applicationName: "Clipped It",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Clipped It" }
+    "Find popular YouTube videos and breakout livestreams, prepare clips, explore paid campaigns and learn the clipping workflow.",
+  applicationName: "Elevate Clippers",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Elevate Clippers" }
 };
 
 export const viewport: Viewport = {
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Nav />
         {children}
         <BottomNav />
+        <ClipCoach />
       </body>
     </html>
   );
