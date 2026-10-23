@@ -108,9 +108,12 @@ export default function LibraryPage() {
                     {[item.creator, item.category, item.metric].filter(Boolean).join(" · ")}
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {item.url ? (
+                    <>
                     <a className="btn" href={item.url} target="_blank" rel="noreferrer">Open</a>
+                    <a className="btn primary" href={`/studio?source=${encodeURIComponent(item.url)}`}>Produce with Opus →</a>
+                    </>
                   ) : null}
                   <button className="btn" type="button" onClick={() => removeLibraryItem(item.id, item.bucket)}>
                     Remove
