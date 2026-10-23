@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  outputFileTracingRoot: process.cwd(),
   // Twitch/Kick thumbnails and avatars are served from their own CDNs.
   images: {
     remotePatterns: [
